@@ -1,0 +1,9 @@
+{
+  "name": "eyes-of-the-sun",
+  "version": "1.0.0",
+  "description": "A role playing game built in Typescript",
+  "main": "index.js",
+  "author": "Devon Cash",
+  "license": "MIT",
+  "private": true
+}
