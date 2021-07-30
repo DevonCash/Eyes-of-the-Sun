@@ -1,5 +1,5 @@
 export default {
-  name: 'draw_system',
+  name: 'display',
 
   async init(settings) {
     console.log('Initializing Drawing System...')
@@ -42,11 +42,20 @@ export default {
     this.ctx.clearRect(0, 0, width, height);
 
     const map = es.find(x => 'tiles' in x);
-    const drawable = es.filter(this.predicate);
+    //    const drawable = es.filter(this.predicate);
+
+    // Construct map of entity by position, draw from top of array to bottom
+    const drawable = es.reduce((m, e) => {
+      if (this.predicate(e)) {
+        const key = `${e.position[0]}:${e.position[1]}`;
+        if (!m.get(key)) m.set(key, e)
+      }
+      return m;
+    }, new Map())
 
     for (let x = 0; x < this.grid_width; x++) {
       for (let y = 0; y < this.grid_height; y++) {
-        const e = drawable.find(({ position }) => position[0] === x && position[1] === y);
+        const e = drawable.get(`${x}:${y}`)
         if (e) this._draw(e.symbol, x, y, e.color || 'white');
         else if (map.tiles.get(`${x}:${y}`)) this._draw('.', x, y, 'gray');
         else this._draw('#', x, y, 'gray');

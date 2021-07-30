@@ -1,4 +1,6 @@
 export default {
+  name: 'movement',
+  after: ['control', 'ai'],
   init() { },
   predicate: e => e && 'position' in e && 'destination' in e,
   process(es) {

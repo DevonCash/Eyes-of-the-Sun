@@ -1,4 +1,5 @@
 export default {
+  name: 'map',
   init() { },
 
   _generate(map) {

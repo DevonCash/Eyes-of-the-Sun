@@ -1,4 +1,7 @@
+import { pt } from '../utils.js';
+
 export default {
+  name: 'control',
   async init() {
     this.buffer = []
     window.addEventListener('keydown', (ev) => this.buffer.push(ev))
@@ -12,13 +15,18 @@ export default {
       // Get the position at the end of movement
       const [x, y] = [p.position[0] + dx, p.position[1] + dy];
 
+      const pred = (x, y) => (e) =>
+        e !== p
+        && (e.position && pt.eq(e.position, [x, y]))
+        || (e.destination && pt.eq(e.destination, [x, y]))
+
       if (map.tiles.get(`${x}:${y}`)) {
-        const other = es.find(e => e !== p && e.position && e.position[0] === x && e.position[1] === y)
+        const other = es.find(pred(x, y))
         if (other && other.blocks_movement) { // Something stands in the way!
           if (other.hp) { // That something can be killed!
             log(`You strike viciously at the ${other.name}!`);
             p.target = other;
-          } else {
+          } else { // It's a pillar or something
             log(`A ${other.name} blocks your way!`);
           }
         } else {

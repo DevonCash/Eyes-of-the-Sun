@@ -1,4 +1,7 @@
-import systems from './modules/systems/index.js';
+import { topoSort } from './utils.js';
+import systems from './systems/index.js';
+
+// TODO: Topological sort to make sure systems run in the correct order
 
 const entities = [
   { _id: 0, name: 'Player', attack: 1, position: [1, 1], symbol: '@', color: 'white' },
@@ -9,14 +12,15 @@ const entities = [
 window.log = console.log
 
 window.onload = async () => {
+  const sys_sorted = topoSort(systems);
 
-  await Promise.all(systems.map(sys => sys.init()))
+  await Promise.all(sys_sorted.map(sys => sys.init && sys.init()))
 
   let lastTime = performance.now()
   function main(time) {
     const dt = time - lastTime
     lastTime = time;
-    systems.forEach(
+    sys_sorted.forEach(
       sys => sys.process(entities, dt)
     )
 
